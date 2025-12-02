@@ -1,0 +1,14 @@
+#!/bin/bash
+RECENT_FILE=$(find . -name "*.rb" -type f -exec stat -f "%m %N" {} \; | sort  -rn | head  - 1 | cut -d' ' -f2-)
+
+if [["RECENT_FILE" == *"_.spec.rb" ]]; then
+  bundle exec rspec "RECENT_FILE"
+elif [["RECENT_FILE" == *".rb" ]]; then
+  SPEC_FILE=$(echo "RECENT_FILE" | sed 's|app/|spec/|' sed 's|lib/|spec/|' | sed 's|\.rb$|_spec.rb|')
+  if [ -f "$SPEC_FILE" ]; then 
+    bundle exec rspec "$SPEC_FILE"
+  else
+    echo "No corresponding file found for $RECENT_FILE"
+  fi
+fi
+

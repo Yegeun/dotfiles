@@ -1,0 +1,8 @@
+os:
+  editor: nvim
+gui:
+  theme:
+    selectedLineBgColor:
+      - "#2d3748"
+    selectedRangeBgColor:
+      - "#2d3748"
