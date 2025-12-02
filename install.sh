@@ -1,32 +1,117 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# Dotfiles installer
-DOTFILES_DIR="$HOME/dotfiles"
+set -e
 
-# Create config directories if they don't exist
-mkdir -p ~/.config
-mkdir -p ~/Library/Application\ Support/lazygit
+echo "========================================="
+echo "🚀 Installing dotfiles..."
+echo "========================================="
+echo ""
 
-# Remove existing configs (backup first if they exist)
-[ -e ~/.config/nvim ] && mv ~/.config/nvim ~/.config/nvim.backup
-[ -e ~/.config/wezterm ] && mv ~/.config/wezterm ~/.config/wezterm.backup
-[ -e ~/.zshrc ] && mv ~/.zshrc ~/.zshrc.backup
-[ -e ~/.p10k.zsh ] && mv ~/.p10k.zsh ~/.p10k.zsh.backup
-[ -e ~/.tmux.conf ] && mv ~/.tmux.conf ~/.tmux.conf.backup
-[ -e ~/Library/Application\ Support/lazygit/config.yml ] && mv ~/Library/Application\ Support/lazygit/config.yml ~/Library/Application\ Support/lazygit/config.yml.backup
+# Check if Homebrew is installed
+if ! command -v brew &> /dev/null; then
+    echo "📦 Installing Homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-# Create symlinks
-ln -s "$DOTFILES_DIR/nvim" ~/.config/nvim
-ln -s "$DOTFILES_DIR/wezterm" ~/.config/wezterm
-ln -s "$DOTFILES_DIR/zshrc" ~/.zshrc
-ln -s "$DOTFILES_DIR/p10k.zsh" ~/.p10k.zsh
-ln -s "$DOTFILES_DIR/tmux.conf" ~/.tmux.conf
-ln -s "$DOTFILES_DIR/lazygit-config.yml" ~/Library/Application\ Support/lazygit/config.yml
-
-# Install TPM (Tmux Plugin Manager) if not exists
-if [ ! -d ~/.tmux/plugins/tpm ]; then
-    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-    echo "TPM installed. Run 'tmux source ~/.tmux.conf' then 'Prefix + I' to install plugins"
+    # Add Homebrew to PATH for Apple Silicon Macs
+    if [[ $(uname -m) == "arm64" ]]; then
+        echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    fi
+    echo "✓ Homebrew installed"
+else
+    echo "✓ Homebrew already installed"
 fi
+echo ""
 
-echo "Dotfiles installed successfully!"
+# Install core tools
+echo "🛠️  Installing core tools..."
+brew install git node tmux lazygit
+brew install --cask wezterm
+echo "✓ Core tools installed"
+echo ""
+
+# Install Neovim from GitHub releases
+if ! command -v nvim &> /dev/null; then
+    echo "📦 Installing Neovim from GitHub..."
+    NVIM_VERSION=$(curl -s https://api.github.com/repos/neovim/neovim/releases/latest | grep '"tag_name"' | sed -E 's/.*"v([^"]+)".*/\1/')
+
+    if [[ $(uname -m) == "arm64" ]]; then
+        NVIM_ARCH="arm64"
+    else
+        NVIM_ARCH="x86_64"
+    fi
+
+    cd /tmp
+    curl -LO "https://github.com/neovim/neovim/releases/download/v${NVIM_VERSION}/nvim-macos-${NVIM_ARCH}.tar.gz"
+    tar xzf nvim-macos-${NVIM_ARCH}.tar.gz
+    sudo mv nvim-macos-${NVIM_ARCH} /opt/nvim
+    sudo ln -sf /opt/nvim/bin/nvim /usr/local/bin/nvim
+    rm nvim-macos-${NVIM_ARCH}.tar.gz
+    cd - > /dev/null
+    echo "✓ Neovim v${NVIM_VERSION} installed"
+else
+    echo "✓ Neovim already installed"
+fi
+echo ""
+
+# Install Nerd Font
+echo "🔤 Installing MesloLGS Nerd Font..."
+brew install font-meslo-lg-nerd-font
+echo "✓ MesloLGS Nerd Font installed"
+echo ""
+
+# Install Oh My Zsh if not already installed
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+    echo "🐚 Installing Oh My Zsh..."
+    sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+    echo "✓ Oh My Zsh installed"
+else
+    echo "✓ Oh My Zsh already installed"
+fi
+echo ""
+
+# Install Powerlevel10k theme
+if [ ! -d "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k" ]; then
+    echo "⚡ Installing Powerlevel10k theme..."
+    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+    echo "✓ Powerlevel10k installed"
+else
+    echo "✓ Powerlevel10k already installed"
+fi
+echo ""
+
+# Get the directory where this script is located
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$DOTFILES_DIR"
+
+# Run individual setup scripts
+echo "========================================="
+echo "📝 Setting up individual tools..."
+echo "========================================="
+echo ""
+
+bash setup-zsh.sh
+echo ""
+
+bash setup-nvim.sh
+echo ""
+
+bash setup-tmux.sh
+echo ""
+
+bash setup-wezterm.sh
+echo ""
+
+bash setup-lazygit.sh
+echo ""
+
+echo "========================================="
+echo "✨ Installation complete!"
+echo "========================================="
+echo ""
+echo "Next steps:"
+echo "1. Restart your terminal or run: source ~/.zshrc"
+echo "2. Open tmux and press Ctrl-Space + I to install tmux plugins"
+echo "3. Open nvim - plugins will auto-install on first launch"
+echo "4. Configure Powerlevel10k by running: p10k configure"
+echo ""

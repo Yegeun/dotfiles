@@ -31,3 +31,4 @@ alias nvm="unalias nvm; [ -s \"$(brew --prefix nvm)/nvm.sh\" ] && . \"$(brew --p
 
 # Kiro CLI post block. Keep at the bottom of this file.
 [[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh"
+export PATH="$HOME/.local/bin:$PATH"

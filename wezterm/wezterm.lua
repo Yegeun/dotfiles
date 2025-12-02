@@ -1,7 +1,7 @@
 local wezterm = require 'wezterm'
 
 return {
-  font = wezterm.font("MesloLGS NF"),
+  font = wezterm.font("MesloLGS Nerd Font Mono"),
   font_size = 14,
   color_scheme = "Catppuccin Macchiato",
   window_background_opacity = 0.95,

@@ -9,10 +9,24 @@ My personal configuration files for macOS development setup.
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
-### 2. Install Core Tools
+### 2. Install Core Tools & Nerd Font
 ```bash
-brew install git tmux neovim zsh node
+brew install git tmux zsh node lazygit
 brew install --cask wezterm
+
+# Install Neovim from GitHub releases
+NVIM_VERSION=$(curl -s https://api.github.com/repos/neovim/neovim/releases/latest | grep '"tag_name"' | sed -E 's/.*"v([^"]+)".*/\1/')
+NVIM_ARCH=$([ "$(uname -m)" = "arm64" ] && echo "arm64" || echo "x86_64")
+cd /tmp
+curl -LO "https://github.com/neovim/neovim/releases/download/v${NVIM_VERSION}/nvim-macos-${NVIM_ARCH}.tar.gz"
+tar xzf nvim-macos-${NVIM_ARCH}.tar.gz
+sudo mv nvim-macos-${NVIM_ARCH} /opt/nvim
+sudo ln -sf /opt/nvim/bin/nvim /usr/local/bin/nvim
+rm nvim-macos-${NVIM_ARCH}.tar.gz
+cd -
+
+# Install Nerd Font for Powerlevel10k
+brew install font-meslo-lg-nerd-font
 ```
 
 ### 3. Install Oh My Zsh
@@ -32,6 +46,8 @@ cd ~/dotfiles
 chmod +x install.sh
 ./install.sh
 ```
+
+**Note**: The `install.sh` script will automatically handle steps 1-4, including installing Homebrew, core tools, the Nerd Font, Oh My Zsh, and Powerlevel10k.
 
 ### 6. Setup Tmux Plugins
 ```bash
@@ -71,5 +87,5 @@ nvim
 
 ### WezTerm
 - No custom keybindings (uses defaults)
-- Font: MesloLGS NF (Powerline compatible)
+- Font: MesloLGS Nerd Font Mono (Nerd Font with icons)
 - Theme: Catppuccin Macchiato

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 echo "Installing nvim prerequisites..."
-brew install neovim ripgrep fzf
+brew install ripgrep fzf
 
 echo "Installing nvim configuration..."
 mkdir -p ~/.config
