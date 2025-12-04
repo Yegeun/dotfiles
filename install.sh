@@ -56,7 +56,7 @@ echo ""
 
 # Install Nerd Font
 echo "🔤 Installing MesloLGS Nerd Font..."
-brew install font-meslo-lg-nerd-font
+brew install --cask font-meslo-lg-nerd-font
 echo "✓ MesloLGS Nerd Font installed"
 echo ""
 
