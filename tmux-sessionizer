@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
 
-selected=$(find ~/Developer -mindepth 1 -maxdepth 1 -type d | /opt/homebrew/bin/fzf)
+# Capture both query and selection from fzf in one call
+fzf_output=$(find ~/Developer -mindepth 1 -maxdepth 1 -type d | /opt/homebrew/bin/fzf --print-query)
+query=$(echo "$fzf_output" | head -n1)
+selected=$(echo "$fzf_output" | tail -n1)
+
+# If no selection but we have a query, use the query
+if [[ -z $selected ]] && [[ -n $query ]]; then
+    selected=$query
+fi
 
 if [[ -z $selected ]]; then
     # If no selection, start or attach to a default session
@@ -8,6 +16,21 @@ if [[ -z $selected ]]; then
         exec /opt/homebrew/bin/tmux new-session -A -s default
     fi
     exit 0
+fi
+
+# Check if the selection starts with "new:"
+new_folder_created=false
+if [[ $selected == new:* ]]; then
+    # Extract the folder name after "new:" and trim whitespace
+    folder_name="${selected#new:}"
+    folder_name=$(echo "$folder_name" | xargs)
+    selected="$HOME/Developer/$folder_name"
+
+    # Create the directory if it doesn't exist
+    if [[ ! -d $selected ]]; then
+        mkdir -p "$selected"
+        new_folder_created=true
+    fi
 fi
 
 selected_name=$(basename "$selected" | tr . _)
@@ -27,4 +50,10 @@ if ! /opt/homebrew/bin/tmux has-session -t=$selected_name 2>/dev/null; then
     /opt/homebrew/bin/tmux new-session -ds $selected_name -c $selected
 fi
 
-exec /opt/homebrew/bin/tmux switch-client -t $selected_name
+/opt/homebrew/bin/tmux switch-client -t $selected_name
+
+# Only cd into the folder if we just created it
+if [[ $new_folder_created == true ]]; then
+    /opt/homebrew/bin/tmux send-keys -t $selected_name "cd \"$selected\"" C-m
+    /opt/homebrew/bin/tmux send-keys -t $selected_name "clear" C-m
+fi
