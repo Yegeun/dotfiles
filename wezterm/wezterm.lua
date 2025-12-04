@@ -12,5 +12,5 @@ return {
     top = 10,
     bottom = 10,
   },
-  default_prog = { "/opt/homebrew/bin/tmux" },
+  default_prog = { "/Users/yegeunji/dotfiles/tmux-sessionizer" },
 }

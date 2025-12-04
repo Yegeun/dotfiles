@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
 
-selected=$(find ~/Developer -mindepth 1 -maxdepth 1 -type d | fzf)
+selected=$(find ~/Developer -mindepth 1 -maxdepth 1 -type d | /opt/homebrew/bin/fzf)
 
 if [[ -z $selected ]]; then
+    # If no selection, start or attach to a default session
+    if [[ -z $TMUX ]]; then
+        exec /opt/homebrew/bin/tmux new-session -A -s default
+    fi
     exit 0
 fi
 
@@ -10,12 +14,12 @@ selected_name=$(basename "$selected" | tr . _)
 tmux_running=$(pgrep tmux)
 
 if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
-    tmux new-session -s $selected_name -c $selected
+    /opt/homebrew/bin/tmux new-session -s $selected_name -c $selected
     exit 0
 fi
 
-if ! tmux has-session -t=$selected_name 2>/dev/null; then
-    tmux new-session -ds $selected_name -c $selected
+if ! /opt/homebrew/bin/tmux has-session -t=$selected_name 2>/dev/null; then
+    /opt/homebrew/bin/tmux new-session -ds $selected_name -c $selected
 fi
 
-tmux switch-client -t $selected_name
+/opt/homebrew/bin/tmux switch-client -t $selected_name
