@@ -14,12 +14,17 @@ selected_name=$(basename "$selected" | tr . _)
 tmux_running=$(pgrep tmux)
 
 if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
-    /opt/homebrew/bin/tmux new-session -s $selected_name -c $selected
-    exit 0
+    exec /opt/homebrew/bin/tmux new-session -s $selected_name -c $selected
 fi
 
+if [[ -z $TMUX ]]; then
+    # Not in tmux, so attach to existing or create new
+    exec /opt/homebrew/bin/tmux new-session -A -s $selected_name -c $selected
+fi
+
+# Already in tmux, switch to the session
 if ! /opt/homebrew/bin/tmux has-session -t=$selected_name 2>/dev/null; then
     /opt/homebrew/bin/tmux new-session -ds $selected_name -c $selected
 fi
 
-/opt/homebrew/bin/tmux switch-client -t $selected_name
+exec /opt/homebrew/bin/tmux switch-client -t $selected_name
