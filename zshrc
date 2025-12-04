@@ -17,6 +17,7 @@ source $ZSH/oh-my-zsh.sh
 
 # aliases
 alias zshconfig="nvim ~/.zshrc"
+alias lg="lazygit"
 
 # Lazy load rbenv
 export PATH="$HOME/.rbenv/shims:$PATH"
