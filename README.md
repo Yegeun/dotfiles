@@ -84,6 +84,12 @@ nvim
 - **Live grep**: `Space + fg` - Search text across files with Telescope
 - **Arrow keys**: Disabled in normal mode (forces hjkl usage)
 - **Clipboard**: System clipboard integration enabled
+- **Tmux Runner**: `Space + r` - Run current file in adjacent tmux pane
+  - Automatically saves the file before running
+  - Creates a vertical split if only one pane exists
+  - Python files: Run with `uv run <filename>`
+  - Rust files: Run with `cargo run`
+  - Requires being in a tmux session
 
 ### WezTerm
 - No custom keybindings (uses defaults)
