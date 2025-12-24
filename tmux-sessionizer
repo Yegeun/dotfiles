@@ -1,9 +1,47 @@
 #!/usr/bin/env bash
 
-# Capture both query and selection from fzf in one call
-fzf_output=$(find ~/Developer -mindepth 1 -maxdepth 1 -type d | /opt/homebrew/bin/fzf --print-query)
+# Create a temporary file to store directory mappings
+tmpfile=$(mktemp)
+find ~/Developer -mindepth 1 -maxdepth 1 -type d -exec basename {} \; > "$tmpfile"
+echo "dotfiles" >> "$tmpfile"
+
+# Capture both query and selection from fzf, showing only folder names
+fzf_output=$(cat "$tmpfile" | /opt/homebrew/bin/fzf \
+    --print-query \
+    --reverse \
+    --height 90% \
+    --border rounded \
+    --prompt "  " \
+    --pointer " " \
+    --marker "✓ " \
+    --header "SESSION MANAGER" \
+    --color "pointer:9,spinner:92,marker:46,fg:7,bg:-1,hl:4,fg+:15,bg+:0,hl+:12,info:8,prompt:4,border:8" \
+    --preview 'if [[ "{}" == "dotfiles" ]]; then
+                   ls -la --color=always ~/dotfiles 2>/dev/null
+               elif [[ -d ~/Developer/{} ]]; then
+                   ls -la --color=always ~/Developer/{} 2>/dev/null
+               else
+                   echo "New directory will be created at:"
+                   echo "  ~/Developer/{}"
+               fi' \
+    --preview-window 'right:55%:border-rounded' \
+    --bind 'ctrl-u:preview-page-up,ctrl-d:preview-page-down,?:toggle-preview')
+
+rm -f "$tmpfile"
+
 query=$(echo "$fzf_output" | head -n1)
-selected=$(echo "$fzf_output" | tail -n1)
+selected_name=$(echo "$fzf_output" | tail -n1)
+
+# Map the selected folder name back to full path
+if [[ -n $selected_name ]]; then
+    if [[ "$selected_name" == "dotfiles" ]]; then
+        selected="$HOME/dotfiles"
+    else
+        selected="$HOME/Developer/$selected_name"
+    fi
+else
+    selected=""
+fi
 
 # If no selection but we have a query, use the query
 if [[ -z $selected ]] && [[ -n $query ]]; then
@@ -18,11 +56,11 @@ if [[ -z $selected ]]; then
     exit 0
 fi
 
-# Check if the selection starts with "new:"
+# Check if the query/selection starts with "new:" to create a new folder
 new_folder_created=false
-if [[ $selected == new:* ]]; then
+if [[ -z $selected ]] && [[ $query == new:* ]]; then
     # Extract the folder name after "new:" and trim whitespace
-    folder_name="${selected#new:}"
+    folder_name="${query#new:}"
     folder_name=$(echo "$folder_name" | xargs)
     selected="$HOME/Developer/$folder_name"
 
@@ -31,29 +69,37 @@ if [[ $selected == new:* ]]; then
         mkdir -p "$selected"
         new_folder_created=true
     fi
+elif [[ -z $selected ]] && [[ -n $query ]]; then
+    # User typed a new project name
+    selected="$HOME/Developer/$query"
+    if [[ ! -d $selected ]]; then
+        mkdir -p "$selected"
+        new_folder_created=true
+    fi
 fi
 
-selected_name=$(basename "$selected" | tr . _)
+# Get session name from the path
+session_name=$(basename "$selected" | tr . _)
 tmux_running=$(pgrep tmux)
 
 if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
-    exec /opt/homebrew/bin/tmux new-session -s $selected_name -c $selected
+    exec /opt/homebrew/bin/tmux new-session -s $session_name -c $selected
 fi
 
 if [[ -z $TMUX ]]; then
     # Not in tmux, so attach to existing or create new
-    exec /opt/homebrew/bin/tmux new-session -A -s $selected_name -c $selected
+    exec /opt/homebrew/bin/tmux new-session -A -s $session_name -c $selected
 fi
 
 # Already in tmux, switch to the session
-if ! /opt/homebrew/bin/tmux has-session -t=$selected_name 2>/dev/null; then
-    /opt/homebrew/bin/tmux new-session -ds $selected_name -c $selected
+if ! /opt/homebrew/bin/tmux has-session -t=$session_name 2>/dev/null; then
+    /opt/homebrew/bin/tmux new-session -ds $session_name -c $selected
 fi
 
-/opt/homebrew/bin/tmux switch-client -t $selected_name
+/opt/homebrew/bin/tmux switch-client -t $session_name
 
 # Only cd into the folder if we just created it
 if [[ $new_folder_created == true ]]; then
-    /opt/homebrew/bin/tmux send-keys -t $selected_name "cd \"$selected\"" C-m
-    /opt/homebrew/bin/tmux send-keys -t $selected_name "clear" C-m
+    /opt/homebrew/bin/tmux send-keys -t $session_name "cd \"$selected\"" C-m
+    /opt/homebrew/bin/tmux send-keys -t $session_name "clear" C-m
 fi
