@@ -18,6 +18,9 @@ source $ZSH/oh-my-zsh.sh
 # aliases
 alias zshconfig="nvim ~/.zshrc"
 alias lg="lazygit"
+alias t="$HOME/dotfiles/tmux-sessionizer"
+alias ta="tmux attach"
+alias tn="tmux new-session"
 
 # Lazy load rbenv
 export PATH="$HOME/.rbenv/shims:$PATH"
