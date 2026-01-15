@@ -15,6 +15,10 @@ plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
 
+# fzf key bindings and completion
+source "$(brew --prefix)/opt/fzf/shell/key-bindings.zsh"
+source "$(brew --prefix)/opt/fzf/shell/completion.zsh"
+
 # aliases
 alias zshconfig="nvim ~/.zshrc"
 alias lg="lazygit"
