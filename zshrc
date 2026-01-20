@@ -25,6 +25,7 @@ alias lg="lazygit"
 alias t="$HOME/dotfiles/tmux-sessionizer"
 alias ta="tmux attach"
 alias tn="tmux new-session"
+alias updatenotes='cd ~/Vault/cs-notes && git pull && git add . && git commit -m "$(date +%Y-%m-%d)" && git push'
 
 # Lazy load rbenv
 export PATH="$HOME/.rbenv/shims:$PATH"
