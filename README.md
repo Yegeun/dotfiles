@@ -2,96 +2,103 @@
 
 My personal configuration files for macOS development setup.
 
-## Installation Order
+## Fresh Install
 
-### 1. Install Homebrew
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-```
+# Clone the repo
+git clone https://github.com/Yegeun/dotfiles.git ~/dotfiles
 
-### 2. Install Core Tools & Nerd Font
-```bash
-brew install git tmux zsh node lazygit
-brew install --cask wezterm
-
-# Install Neovim from GitHub releases
-NVIM_VERSION=$(curl -s https://api.github.com/repos/neovim/neovim/releases/latest | grep '"tag_name"' | sed -E 's/.*"v([^"]+)".*/\1/')
-NVIM_ARCH=$([ "$(uname -m)" = "arm64" ] && echo "arm64" || echo "x86_64")
-cd /tmp
-curl -LO "https://github.com/neovim/neovim/releases/download/v${NVIM_VERSION}/nvim-macos-${NVIM_ARCH}.tar.gz"
-tar xzf nvim-macos-${NVIM_ARCH}.tar.gz
-sudo mv nvim-macos-${NVIM_ARCH} /opt/nvim
-sudo ln -sf /opt/nvim/bin/nvim /usr/local/bin/nvim
-rm nvim-macos-${NVIM_ARCH}.tar.gz
-cd -
-
-# Install Nerd Font for Powerlevel10k
-brew install font-meslo-lg-nerd-font
-```
-
-### 3. Install Oh My Zsh
-```bash
-sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-```
-
-### 4. Install Powerlevel10k Theme
-```bash
-git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
-```
-
-### 5. Clone and Install Dotfiles
-```bash
-git clone <your-repo-url> ~/dotfiles
+# Run the install script
 cd ~/dotfiles
-chmod +x install.sh
-./install.sh
+chmod +x install-all-and-symlink.sh
+./install-all-and-symlink.sh
 ```
 
-**Note**: The `install.sh` script will automatically handle steps 1-4, including installing Homebrew, core tools, the Nerd Font, Oh My Zsh, and Powerlevel10k.
+The install script will:
+- Install Homebrew (if not installed)
+- Install core tools (git, node, tmux, lazygit, fzf, wezterm)
+- Install Neovim from GitHub releases
+- Install MesloLGS Nerd Font
+- Install Oh My Zsh and Powerlevel10k theme
+- Install TPM and tmux plugins
+- Create all necessary symlinks
 
-### 6. Setup Tmux Plugins
+### After Install
+
+1. **Restart your terminal** or run `source ~/.zshrc`
+2. **Disable macOS Ctrl+Space shortcut** (required for tmux prefix):
+   - System Settings → Keyboard → Keyboard Shortcuts → Input Sources
+   - Turn OFF "Select the previous input source" (^Space)
+3. **Open tmux** and press `Ctrl+Space + I` to install any remaining plugins
+4. **Open nvim** - plugins will auto-install on first launch
+5. **Configure Powerlevel10k** by running `p10k configure` (optional)
+
+## Update
+
+To pull the latest changes and re-run setup:
+
 ```bash
-tmux source ~/.tmux.conf
-# Then press Ctrl+a + I to install plugins
+cd ~/dotfiles
+git pull
+./install-all-and-symlink.sh
 ```
 
-### 7. Launch Neovim (plugins auto-install)
-```bash
-nvim
-```
+The install script is idempotent - it will skip already installed components and only update symlinks.
 
 ## Contents
 
 - `nvim/` - Neovim configuration with Lazy plugin manager
-- `wezterm/` - WezTerm terminal configuration  
+- `wezterm/` - WezTerm terminal configuration
 - `tmux.conf` - Tmux configuration with Catppuccin theme
-- `zshrc` - Zsh shell configuration with Oh My Zsh
+- `tmux-sessionizer` - Fuzzy session manager for tmux
+- `zshrc` - Zsh shell configuration with Oh My Zsh and fzf
 - `p10k.zsh` - Powerlevel10k theme configuration
-- `lazygit-config.yml` - Lazygit configuration with improved color contrast
+- `lazygit-config.yml` - Lazygit configuration
 
-## Custom Keybindings
+## Keybindings
 
 ### Tmux
-- **Prefix**: `Ctrl+Space` (instead of default Ctrl+b)
-- **Reload config**: `Ctrl+a + r` - Reload tmux configuration
-- **Mouse support**: Enabled for pane selection and resizing
-- **Vi mode**: Enabled for copy mode navigation
+
+| Key | Action |
+|-----|--------|
+| `Ctrl+Space` | Prefix (instead of Ctrl+b) |
+| `Prefix + R` | Reload tmux config |
+| `Prefix + r` | Rename current window |
+| `Prefix + f` | Open tmux-sessionizer (fuzzy project switcher) |
+| `Prefix + I` | Install tmux plugins |
+| `Prefix + \|` | Split pane horizontally |
+| `Prefix + -` | Split pane vertically |
+| `Ctrl+h/j/k/l` | Navigate between panes (vim-style) |
+
+### Shell (fzf)
+
+| Key | Action |
+|-----|--------|
+| `Ctrl+R` | Fuzzy search command history |
+| `Ctrl+T` | Fuzzy search files |
+| `Alt+C` | Fuzzy cd into directories |
 
 ### Neovim
-- **Leader key**: `Space`
-- **Local leader**: `\`
-- **File finder**: `Ctrl+p` - Open Telescope file finder
-- **Live grep**: `Space + fg` - Search text across files with Telescope
-- **Arrow keys**: Disabled in normal mode (forces hjkl usage)
-- **Clipboard**: System clipboard integration enabled
-- **Tmux Runner**: `Space + r` - Run current file in adjacent tmux pane
-  - Automatically saves the file before running
-  - Creates a vertical split if only one pane exists
-  - Python files: Run with `uv run <filename>`
-  - Rust files: Run with `cargo run`
-  - Requires being in a tmux session
 
-### WezTerm
-- No custom keybindings (uses defaults)
-- Font: MesloLGS Nerd Font Mono (Nerd Font with icons)
-- Theme: Catppuccin Macchiato
+| Key | Action |
+|-----|--------|
+| `Space` | Leader key |
+| `Ctrl+p` | Open Telescope file finder |
+| `Space + fg` | Live grep (search text across files) |
+| `Space + r` | Run current file in adjacent tmux pane |
+
+### tmux-sessionizer
+
+| Key | Action |
+|-----|--------|
+| Type name | Select existing project or create new one in `~/Developer/` |
+| `new:name` | Explicitly create new project folder |
+
+## Tmux Plugins
+
+- **tpm** - Tmux Plugin Manager
+- **tmux-sensible** - Sensible defaults
+- **vim-tmux-navigator** - Seamless vim/tmux navigation
+- **catppuccin/tmux** - Catppuccin theme
+- **tmux-resurrect** - Save/restore tmux sessions
+- **tmux-continuum** - Auto-save sessions every 15 minutes

@@ -26,5 +26,7 @@ echo "Installing tmux plugins..."
 [ ! -d ~/.tmux/plugins/vim-tmux-navigator ] && git clone https://github.com/christoomey/vim-tmux-navigator ~/.tmux/plugins/vim-tmux-navigator && echo "✓ Installed vim-tmux-navigator"
 [ ! -d ~/.tmux/plugins/tmux-sensible ] && git clone https://github.com/tmux-plugins/tmux-sensible ~/.tmux/plugins/tmux-sensible && echo "✓ Installed tmux-sensible"
 [ ! -d ~/.tmux/plugins/tmuxifier ] && git clone https://github.com/jimeh/tmuxifier ~/.tmux/plugins/tmuxifier && echo "✓ Installed tmuxifier"
+[ ! -d ~/.tmux/plugins/tmux-resurrect ] && git clone https://github.com/tmux-plugins/tmux-resurrect ~/.tmux/plugins/tmux-resurrect && echo "✓ Installed tmux-resurrect"
+[ ! -d ~/.tmux/plugins/tmux-continuum ] && git clone https://github.com/tmux-plugins/tmux-continuum ~/.tmux/plugins/tmux-continuum && echo "✓ Installed tmux-continuum"
 
 echo "✓ Tmux setup complete! All plugins installed. Start tmux to see the new status bar!"
