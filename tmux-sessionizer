@@ -33,9 +33,21 @@ query=$(echo "$fzf_output" | head -n1)
 selected_name=$(echo "$fzf_output" | tail -n1)
 
 new_folder_created=false
+uv_project=false
 
+# Check if query starts with "uvnew:" to create a new Python project
+if [[ $query == uvnew:* ]]; then
+    folder_name="${query#uvnew:}"
+    folder_name=$(echo "$folder_name" | xargs)
+    selected="$HOME/Developer/$folder_name"
+
+    if [[ ! -d $selected ]]; then
+        mkdir -p "$selected"
+        new_folder_created=true
+        uv_project=true
+    fi
 # Check if query starts with "new:" to create a new folder
-if [[ $query == new:* ]]; then
+elif [[ $query == new:* ]]; then
     folder_name="${query#new:}"
     folder_name=$(echo "$folder_name" | xargs)
     selected="$HOME/Developer/$folder_name"
@@ -95,5 +107,11 @@ fi
 # Only cd into the folder if we just created it
 if [[ $new_folder_created == true ]]; then
     /opt/homebrew/bin/tmux send-keys -t $session_name "cd \"$selected\"" C-m
+
+    # Initialize uv project if uvnew: was used
+    if [[ $uv_project == true ]]; then
+        /opt/homebrew/bin/tmux send-keys -t $session_name "uv init && uv venv && source .venv/bin/activate" C-m
+    fi
+
     /opt/homebrew/bin/tmux send-keys -t $session_name "clear" C-m
 fi

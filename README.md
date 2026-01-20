@@ -89,7 +89,8 @@ The install script is idempotent - it will skip already installed components and
 | Key | Action |
 |-----|--------|
 | Type name | Select existing project or create new one in `~/Developer/` |
-| `new:name` | Explicitly create new project folder |
+| `new:name` | Create new project folder |
+| `uvnew:name` | Create new Python project with `uv init` and virtual environment |
 
 ## Tmux Plugins
 
