@@ -26,12 +26,9 @@ The install script will:
 ### After Install
 
 1. **Restart your terminal** or run `source ~/.zshrc`
-2. **Disable macOS Ctrl+Space shortcut** (required for tmux prefix):
-   - System Settings → Keyboard → Keyboard Shortcuts → Input Sources
-   - Turn OFF "Select the previous input source" (^Space)
-3. **Open tmux** and press `Ctrl+Space + I` to install any remaining plugins
-4. **Open nvim** - plugins will auto-install on first launch
-5. **Configure Powerlevel10k** by running `p10k configure` (optional)
+2. **Open tmux** and press `Ctrl+a + I` to install any remaining plugins
+3. **Open nvim** - plugins will auto-install on first launch
+4. **Configure Powerlevel10k** by running `p10k configure` (optional)
 
 ## Update
 
@@ -61,7 +58,7 @@ The install script is idempotent - it will skip already installed components and
 
 | Key | Action |
 |-----|--------|
-| `Ctrl+Space` | Prefix (instead of Ctrl+b) |
+| `Ctrl+a` | Prefix (instead of Ctrl+b) |
 | `Prefix + R` | Reload tmux config |
 | `Prefix + r` | Rename current window |
 | `Prefix + f` | Open tmux-sessionizer (fuzzy project switcher) |
