@@ -25,7 +25,7 @@ echo ""
 
 # Install core tools
 echo "🛠️  Installing core tools..."
-brew install git node tmux lazygit
+brew install git node tmux lazygit uv
 brew install --cask wezterm
 echo "✓ Core tools installed"
 echo ""
