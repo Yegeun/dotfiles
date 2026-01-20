@@ -32,8 +32,20 @@ rm -f "$tmpfile"
 query=$(echo "$fzf_output" | head -n1)
 selected_name=$(echo "$fzf_output" | tail -n1)
 
+new_folder_created=false
+
+# Check if query starts with "new:" to create a new folder
+if [[ $query == new:* ]]; then
+    folder_name="${query#new:}"
+    folder_name=$(echo "$folder_name" | xargs)
+    selected="$HOME/Developer/$folder_name"
+
+    if [[ ! -d $selected ]]; then
+        mkdir -p "$selected"
+        new_folder_created=true
+    fi
 # Map the selected folder name back to full path
-if [[ -n $selected_name ]]; then
+elif [[ -n $selected_name ]]; then
     if [[ "$selected_name" == "dotfiles" ]]; then
         selected="$HOME/dotfiles"
     else
@@ -45,7 +57,11 @@ fi
 
 # If no selection but we have a query, use the query
 if [[ -z $selected ]] && [[ -n $query ]]; then
-    selected=$query
+    selected="$HOME/Developer/$query"
+    if [[ ! -d $selected ]]; then
+        mkdir -p "$selected"
+        new_folder_created=true
+    fi
 fi
 
 if [[ -z $selected ]]; then
@@ -54,28 +70,6 @@ if [[ -z $selected ]]; then
         exec /opt/homebrew/bin/tmux new-session -A -s default
     fi
     exit 0
-fi
-
-# Check if the query/selection starts with "new:" to create a new folder
-new_folder_created=false
-if [[ -z $selected ]] && [[ $query == new:* ]]; then
-    # Extract the folder name after "new:" and trim whitespace
-    folder_name="${query#new:}"
-    folder_name=$(echo "$folder_name" | xargs)
-    selected="$HOME/Developer/$folder_name"
-
-    # Create the directory if it doesn't exist
-    if [[ ! -d $selected ]]; then
-        mkdir -p "$selected"
-        new_folder_created=true
-    fi
-elif [[ -z $selected ]] && [[ -n $query ]]; then
-    # User typed a new project name
-    selected="$HOME/Developer/$query"
-    if [[ ! -d $selected ]]; then
-        mkdir -p "$selected"
-        new_folder_created=true
-    fi
 fi
 
 # Get session name from the path
