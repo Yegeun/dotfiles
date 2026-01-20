@@ -16,7 +16,7 @@ chmod +x install-all-and-symlink.sh
 
 The install script will:
 - Install Homebrew (if not installed)
-- Install core tools (git, node, tmux, lazygit, fzf, wezterm)
+- Install core tools (git, node, tmux, lazygit, uv, fzf, wezterm)
 - Install Neovim from GitHub releases
 - Install MesloLGS Nerd Font
 - Install Oh My Zsh and Powerlevel10k theme
