@@ -15,5 +15,11 @@ vim.keymap.set({'n', 'i', 'v'}, '<Down>', '<Nop>')
 vim.keymap.set({'n', 'i', 'v'}, '<Left>', '<Nop>')
 vim.keymap.set({'n', 'i', 'v'}, '<Right>', '<Nop>')
 
+-- Quick save with leader+w
+vim.keymap.set('n', '<leader>w', '<cmd>w<cr>', { desc = "Save file" })
+
+-- Exit insert mode with jj
+vim.keymap.set('i', 'jj', '<Esc>', { desc = "Exit insert mode" })
+
 require("config.lazy")
 
