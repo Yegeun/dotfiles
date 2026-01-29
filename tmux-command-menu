@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+# Tmux command menu - dynamically loads keybindings
+
+# Get all prefix keybindings and format them nicely
+bindings=$(/opt/homebrew/bin/tmux list-keys -T prefix | awk '{
+    # Extract the key and command
+    key = $4
+    cmd = ""
+    for (i = 5; i <= NF; i++) cmd = cmd " " $i
+    gsub(/^[ \t]+/, "", cmd)
+
+    # Skip if empty or meta keys
+    if (key == "" || cmd == "") next
+
+    # Format: key → command
+    printf "%-12s  %s\n", key, cmd
+}' | sort)
+
+# Show fzf and get selection
+selected=$(echo "$bindings" | /opt/homebrew/bin/fzf \
+    --reverse \
+    --border rounded \
+    --prompt "  " \
+    --pointer " " \
+    --header "TMUX KEYBINDINGS (prefix + key)" \
+    --color "pointer:9,spinner:92,marker:46,fg:7,bg:-1,hl:4,fg+:15,bg+:0,hl+:12,info:8,prompt:4,border:8" \
+    --preview-window hidden)
+
+[[ -z $selected ]] && exit 0
+
+# Extract the key from selection and simulate the keypress
+key=$(echo "$selected" | awk '{print $1}')
+
+# Execute the command directly by extracting it
+cmd=$(echo "$selected" | sed 's/^[^ ]*[ ]*//')
+eval "tmux $cmd"

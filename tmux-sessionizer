@@ -110,7 +110,7 @@ if [[ $new_folder_created == true ]]; then
 
     # Initialize uv project if uvnew: was used
     if [[ $uv_project == true ]]; then
-        /opt/homebrew/bin/tmux send-keys -t $session_name "uv init && uv venv && source .venv/bin/activate" C-m
+        /opt/homebrew/bin/tmux send-keys -t $session_name "uv init" C-m
     fi
 
     /opt/homebrew/bin/tmux send-keys -t $session_name "clear" C-m

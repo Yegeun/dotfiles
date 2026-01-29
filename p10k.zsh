@@ -16,6 +16,7 @@
   typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
     dir
     vcs
+    uv_project
     prompt_char
   )
 
@@ -87,6 +88,16 @@
   typeset -g POWERLEVEL9K_TIME_FOREGROUND=0
   typeset -g POWERLEVEL9K_TIME_BACKGROUND=7
   typeset -g POWERLEVEL9K_TIME_FORMAT='%D{%H:%M}'
+
+  # Custom uv project indicator
+  function prompt_uv_project() {
+    [[ -f pyproject.toml ]] || return
+    local name=$(grep -m1 '^name' pyproject.toml 2>/dev/null | cut -d'"' -f2)
+    [[ -n $name ]] || name=$(basename $PWD)
+    p10k segment -f 0 -b 4 -t " $name"
+  }
+  typeset -g POWERLEVEL9K_UV_PROJECT_FOREGROUND=0
+  typeset -g POWERLEVEL9K_UV_PROJECT_BACKGROUND=4
 
   # Transient prompt
   typeset -g POWERLEVEL9K_TRANSIENT_PROMPT=always
