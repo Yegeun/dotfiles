@@ -94,7 +94,7 @@
     [[ -f pyproject.toml ]] || return
     local name=$(grep -m1 '^name' pyproject.toml 2>/dev/null | cut -d'"' -f2)
     [[ -n $name ]] || name=$(basename $PWD)
-    p10k segment -f 0 -b 4 -t " $name"
+    p10k segment -f 0 -b 4 -i '' -t "$name"
   }
   typeset -g POWERLEVEL9K_UV_PROJECT_FOREGROUND=0
   typeset -g POWERLEVEL9K_UV_PROJECT_BACKGROUND=4

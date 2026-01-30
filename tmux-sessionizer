@@ -34,9 +34,21 @@ selected_name=$(echo "$fzf_output" | tail -n1)
 
 new_folder_created=false
 uv_project=false
+uv_tdd_project=false
 
+# Check if query starts with "uvtddnew:" to create a TDD Python project
+if [[ $query == uvtddnew:* ]]; then
+    folder_name="${query#uvtddnew:}"
+    folder_name=$(echo "$folder_name" | xargs)
+    selected="$HOME/Developer/$folder_name"
+
+    if [[ ! -d $selected ]]; then
+        mkdir -p "$selected"
+        new_folder_created=true
+        uv_tdd_project=true
+    fi
 # Check if query starts with "uvnew:" to create a new Python project
-if [[ $query == uvnew:* ]]; then
+elif [[ $query == uvnew:* ]]; then
     folder_name="${query#uvnew:}"
     folder_name=$(echo "$folder_name" | xargs)
     selected="$HOME/Developer/$folder_name"
@@ -111,6 +123,27 @@ if [[ $new_folder_created == true ]]; then
     # Initialize uv project if uvnew: was used
     if [[ $uv_project == true ]]; then
         /opt/homebrew/bin/tmux send-keys -t $session_name "uv init" C-m
+    fi
+
+    # Initialize TDD project if uvtddnew: was used
+    if [[ $uv_tdd_project == true ]]; then
+        project_name=$(basename "$selected" | tr '-' '_')
+        /opt/homebrew/bin/tmux send-keys -t $session_name "uv init && uv add --dev pytest && rm -f main.py && mkdir -p src/$project_name tests && touch src/$project_name/__init__.py tests/__init__.py" C-m
+        /opt/homebrew/bin/tmux send-keys -t $session_name "cat > src/$project_name/main.py << 'EOF'
+def add(a, b):
+    return a + b
+EOF" C-m
+        /opt/homebrew/bin/tmux send-keys -t $session_name "cat > conftest.py << 'EOF'
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent / \"src\"))
+EOF" C-m
+        /opt/homebrew/bin/tmux send-keys -t $session_name "cat > tests/test_main.py << 'EOF'
+from ${project_name}.main import add
+
+def test_add():
+    assert add(1, 2) == 3
+EOF" C-m
     fi
 
     /opt/homebrew/bin/tmux send-keys -t $session_name "clear" C-m
