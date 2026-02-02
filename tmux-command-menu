@@ -33,9 +33,11 @@ selected=$(echo "$bindings" | $FZF \
 
 [[ -z $selected ]] && exit 0
 
-# Extract the key from selection and simulate the keypress
-key=$(echo "$selected" | awk '{print $1}')
-
-# Execute the command directly by extracting it
+# Extract the command from selection (everything after the key)
 cmd=$(echo "$selected" | sed 's/^[^ ]*[ ]*//')
-eval "$TMUX_BIN $cmd"
+
+# Write command to temp file and source it - this handles braces and interactive commands
+tmpfile=$(mktemp)
+echo "$cmd" > "$tmpfile"
+$TMUX_BIN source-file "$tmpfile"
+rm -f "$tmpfile"
