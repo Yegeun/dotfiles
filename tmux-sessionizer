@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
 
+# Get paths dynamically
+FZF=$(command -v fzf)
+TMUX_BIN=$(command -v tmux)
+
 # Create a temporary file to store directory mappings
 tmpfile=$(mktemp)
 find ~/Developer -mindepth 1 -maxdepth 1 -type d -exec basename {} \; > "$tmpfile"
 echo "dotfiles" >> "$tmpfile"
 
 # Capture both query and selection from fzf, showing only folder names
-fzf_output=$(cat "$tmpfile" | /opt/homebrew/bin/fzf \
+fzf_output=$(cat "$tmpfile" | $FZF \
     --print-query \
     --reverse \
     --height 90% \
@@ -91,7 +95,7 @@ fi
 if [[ -z $selected ]]; then
     # If no selection, start or attach to a default session
     if [[ -z $TMUX ]]; then
-        exec /opt/homebrew/bin/tmux new-session -A -s default
+        exec $TMUX_BIN new-session -A -s default
     fi
     exit 0
 fi
@@ -101,44 +105,44 @@ session_name=$(basename "$selected" | tr . _)
 tmux_running=$(pgrep tmux)
 
 if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
-    exec /opt/homebrew/bin/tmux new-session -s $session_name -c $selected
+    exec $TMUX_BIN new-session -s $session_name -c $selected
 fi
 
 if [[ -z $TMUX ]]; then
     # Not in tmux, so attach to existing or create new
-    exec /opt/homebrew/bin/tmux new-session -A -s $session_name -c $selected
+    exec $TMUX_BIN new-session -A -s $session_name -c $selected
 fi
 
 # Already in tmux, switch to the session
-if ! /opt/homebrew/bin/tmux has-session -t=$session_name 2>/dev/null; then
-    /opt/homebrew/bin/tmux new-session -ds $session_name -c $selected
+if ! $TMUX_BIN has-session -t=$session_name 2>/dev/null; then
+    $TMUX_BIN new-session -ds $session_name -c $selected
 fi
 
-/opt/homebrew/bin/tmux switch-client -t $session_name
+$TMUX_BIN switch-client -t $session_name
 
 # Only cd into the folder if we just created it
 if [[ $new_folder_created == true ]]; then
-    /opt/homebrew/bin/tmux send-keys -t $session_name "cd \"$selected\"" C-m
+    $TMUX_BIN send-keys -t $session_name "cd \"$selected\"" C-m
 
     # Initialize uv project if uvnew: was used
     if [[ $uv_project == true ]]; then
-        /opt/homebrew/bin/tmux send-keys -t $session_name "uv init" C-m
+        $TMUX_BIN send-keys -t $session_name "uv init" C-m
     fi
 
     # Initialize TDD project if uvtddnew: was used
     if [[ $uv_tdd_project == true ]]; then
         project_name=$(basename "$selected" | tr '-' '_')
-        /opt/homebrew/bin/tmux send-keys -t $session_name "uv init && uv add --dev pytest && rm -f main.py && mkdir -p src/$project_name tests && touch src/$project_name/__init__.py tests/__init__.py" C-m
-        /opt/homebrew/bin/tmux send-keys -t $session_name "cat > src/$project_name/main.py << 'EOF'
+        $TMUX_BIN send-keys -t $session_name "uv init && uv add --dev pytest && rm -f main.py && mkdir -p src/$project_name tests && touch src/$project_name/__init__.py tests/__init__.py" C-m
+        $TMUX_BIN send-keys -t $session_name "cat > src/$project_name/main.py << 'EOF'
 def add(a, b):
     return a + b
 EOF" C-m
-        /opt/homebrew/bin/tmux send-keys -t $session_name "cat > conftest.py << 'EOF'
+        $TMUX_BIN send-keys -t $session_name "cat > conftest.py << 'EOF'
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent / \"src\"))
 EOF" C-m
-        /opt/homebrew/bin/tmux send-keys -t $session_name "cat > tests/test_main.py << 'EOF'
+        $TMUX_BIN send-keys -t $session_name "cat > tests/test_main.py << 'EOF'
 from ${project_name}.main import add
 
 def test_add():
@@ -146,5 +150,5 @@ def test_add():
 EOF" C-m
     fi
 
-    /opt/homebrew/bin/tmux send-keys -t $session_name "clear" C-m
+    $TMUX_BIN send-keys -t $session_name "clear" C-m
 fi

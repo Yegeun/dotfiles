@@ -1,12 +1,14 @@
 return {
   {
     "williamboman/mason.nvim",
+    lazy = false,
     config = function()
       require("mason").setup()
     end
   },
   {
     "williamboman/mason-lspconfig.nvim",
+    lazy = false,
     dependencies = { "williamboman/mason.nvim" },
     config = function()
       require("mason-lspconfig").setup({
@@ -24,12 +26,8 @@ return {
     },
   },
   {
-    "saghen/blink.cmp",
-    -- loaded from cmp.lua, just declaring dependency
-    lazy = true,
-  },
-  {
     "neovim/nvim-lspconfig",
+    lazy = false,
     dependencies = {
       "williamboman/mason-lspconfig.nvim",
       "saghen/blink.cmp"

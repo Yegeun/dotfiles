@@ -23,11 +23,29 @@ else
 fi
 echo ""
 
-# Install core tools
+# Install core CLI tools (only if not already installed)
 echo "🛠️  Installing core tools..."
-brew install git node tmux lazygit uv
-brew install --cask wezterm
-echo "✓ Core tools installed"
+tools=(git node tmux lazygit uv fzf)
+for tool in "${tools[@]}"; do
+    if ! command -v $tool &> /dev/null; then
+        echo "  Installing $tool..."
+        brew install $tool
+    else
+        echo "  ✓ $tool already installed"
+    fi
+done
+brew link --overwrite lazygit 2>/dev/null || true
+echo "✓ Core tools ready"
+echo ""
+
+# Install WezTerm (cask)
+if ! [ -d "/Applications/WezTerm.app" ]; then
+    echo "🖥️  Installing WezTerm..."
+    brew install --cask wezterm
+    echo "✓ WezTerm installed"
+else
+    echo "✓ WezTerm already installed"
+fi
 echo ""
 
 # Install Neovim from GitHub releases
@@ -55,9 +73,13 @@ fi
 echo ""
 
 # Install Nerd Font
-echo "🔤 Installing MesloLGS Nerd Font..."
-brew install --cask font-meslo-lg-nerd-font
-echo "✓ MesloLGS Nerd Font installed"
+if ! ls ~/Library/Fonts/MesloLGS* &> /dev/null && ! ls /Library/Fonts/MesloLGS* &> /dev/null; then
+    echo "🔤 Installing MesloLGS Nerd Font..."
+    brew install --cask font-meslo-lg-nerd-font
+    echo "✓ MesloLGS Nerd Font installed"
+else
+    echo "✓ MesloLGS Nerd Font already installed"
+fi
 echo ""
 
 # Install Oh My Zsh if not already installed

@@ -2,8 +2,12 @@
 
 # Tmux command menu - dynamically loads keybindings
 
+# Get paths dynamically
+FZF=$(command -v fzf)
+TMUX_BIN=$(command -v tmux)
+
 # Get all prefix keybindings and format them nicely
-bindings=$(/opt/homebrew/bin/tmux list-keys -T prefix | awk '{
+bindings=$($TMUX_BIN list-keys -T prefix | awk '{
     # Extract the key and command
     key = $4
     cmd = ""
@@ -18,7 +22,7 @@ bindings=$(/opt/homebrew/bin/tmux list-keys -T prefix | awk '{
 }' | sort)
 
 # Show fzf and get selection
-selected=$(echo "$bindings" | /opt/homebrew/bin/fzf \
+selected=$(echo "$bindings" | $FZF \
     --reverse \
     --border rounded \
     --prompt "  " \
@@ -34,4 +38,4 @@ key=$(echo "$selected" | awk '{print $1}')
 
 # Execute the command directly by extracting it
 cmd=$(echo "$selected" | sed 's/^[^ ]*[ ]*//')
-eval "tmux $cmd"
+eval "$TMUX_BIN $cmd"

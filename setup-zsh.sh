@@ -1,11 +1,14 @@
 #!/usr/bin/env bash
 
-echo "Installing zsh configuration..."
+# Get the directory where this script is located
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-ln -sf ~/dotfiles/zshrc ~/.zshrc
-echo "✓ Linked zshrc"
+echo "Setting up zsh configuration..."
 
-ln -sf ~/dotfiles/p10k.zsh ~/.p10k.zsh
-echo "✓ Linked p10k.zsh"
+ln -sf "${DOTFILES_DIR}/zshrc" "${HOME}/.zshrc"
+echo "  ✓ Linked zshrc"
+
+ln -sf "${DOTFILES_DIR}/p10k.zsh" "${HOME}/.p10k.zsh"
+echo "  ✓ Linked p10k.zsh"
 
 echo "✓ Zsh setup complete!"
