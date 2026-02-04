@@ -142,7 +142,7 @@ import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent / \"src\"))
 EOF" C-m
-        $TMUX_BIN send-keys -t $session_name "cat > tests/test_main.py << 'EOF'
+        $TMUX_BIN send-keys -t $session_name "cat > tests/test_main.py << EOF
 from ${project_name}.main import add
 
 def test_add():

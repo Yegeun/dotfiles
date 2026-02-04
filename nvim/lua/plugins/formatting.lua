@@ -15,7 +15,7 @@ return {
     opts = {
       formatters_by_ft = {
         lua = { "stylua" },
-        python = { "black" },
+        python = { "ruff_format" },
         javascript = { "prettier" },
         typescript = { "prettier" },
         javascriptreact = { "prettier" },
@@ -65,7 +65,6 @@ return {
       require("mason-tool-installer").setup({
         ensure_installed = {
           "stylua",
-          "black",
           "prettier",
           "shfmt",
           "shellcheck",
