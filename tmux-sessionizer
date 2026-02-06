@@ -132,15 +132,21 @@ if [[ $new_folder_created == true ]]; then
     # Initialize TDD project if uvtddnew: was used
     if [[ $uv_tdd_project == true ]]; then
         project_name=$(basename "$selected" | tr '-' '_')
-        $TMUX_BIN send-keys -t $session_name "uv init && uv add --dev pytest && rm -f main.py && mkdir -p src/$project_name tests && touch src/$project_name/__init__.py tests/__init__.py" C-m
 
-        # Wait a bit for the directories to be created
-        sleep 0.5
+        # Create directory structure in parent script (not in tmux)
+        mkdir -p "$selected/src/$project_name"
+        mkdir -p "$selected/tests"
 
         # Create files directly in the script
+        cat > "$selected/src/$project_name/__init__.py" << 'EOF'
+EOF
+
         cat > "$selected/src/$project_name/main.py" << 'EOF'
 def add(a, b):
     return a + b
+EOF
+
+        cat > "$selected/tests/__init__.py" << 'EOF'
 EOF
 
         cat > "$selected/conftest.py" << 'EOF'
@@ -155,6 +161,9 @@ from ${project_name}.main import add
 def test_add():
     assert add(1, 2) == 3
 EOF
+
+        # Now initialize uv project and install dependencies in tmux
+        $TMUX_BIN send-keys -t $session_name "uv init && uv add --dev pytest && rm -f hello.py main.py" C-m
     fi
 
     $TMUX_BIN send-keys -t $session_name "clear" C-m
