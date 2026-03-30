@@ -27,10 +27,6 @@ alias ta="tmux attach"
 alias tn="tmux new-session"
 alias updatenotes='cd ~/Vault/cs-notes && git pull && git add . && git commit -m "$(date +%Y-%m-%d)" && git push'
 
-# Lazy load rbenv
-export PATH="$HOME/.rbenv/shims:$PATH"
-alias rbenv="unalias rbenv; eval \"\$(command rbenv init -)\"; rbenv \$@"
-
 # Lazy load nvm
 export NVM_DIR="$HOME/.nvm"
 alias nvm="unalias nvm; [ -s \"$(brew --prefix nvm)/nvm.sh\" ] && . \"$(brew --prefix nvm)/nvm.sh\"; nvm \$@"
