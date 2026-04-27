@@ -66,33 +66,7 @@
   typeset -g POWERLEVEL9K_VCS_CONFLICTED_BACKGROUND=1
   typeset -g POWERLEVEL9K_VCS_LOADING_BACKGROUND=8
 
-  # Shorten branch names: feature/TICKET-123-some-desc → f/TICKET-123-s
   typeset -g POWERLEVEL9K_VCS_BRANCH_ICON=' '
-  function my_git_formatter() {
-    emulate -L zsh
-    if [[ -n $P9K_CONTENT ]]; then
-      typeset -g my_git_format=$P9K_CONTENT
-      return
-    fi
-    local branch=$VCS_STATUS_LOCAL_BRANCH
-    if [[ $branch == (#b)(feature|bugfix|hotfix|fix|chore|release|refactor)/(*)  ]]; then
-      local prefix=${match[1][1]}
-      local rest=${match[2]}
-      # Keep ticket number (e.g. JIRA-123, TICKET-456), shorten the rest
-      if [[ $rest == (#b)([A-Z]##-[0-9]##)([-/]*)  ]]; then
-        local ticket=${match[1]}
-        local desc=${match[2]}
-        # First letter of description after separator
-        local short_desc=${desc[2,2]}
-        branch="${prefix}/${ticket}${short_desc:+-${short_desc}}"
-      else
-        branch="${prefix}/${rest[1,12]}"
-      fi
-    fi
-    typeset -g my_git_format=$branch
-  }
-  functions -M my_git_formatter 2>/dev/null
-  typeset -g POWERLEVEL9K_VCS_CONTENT_EXPANSION='${$((my_git_formatter(1)))+=}${my_git_format}'
 
   # Status
   typeset -g POWERLEVEL9K_STATUS_EXTENDED_STATES=true
