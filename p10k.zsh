@@ -66,7 +66,49 @@
   typeset -g POWERLEVEL9K_VCS_CONFLICTED_BACKGROUND=1
   typeset -g POWERLEVEL9K_VCS_LOADING_BACKGROUND=8
 
-  typeset -g POWERLEVEL9K_VCS_BRANCH_ICON=' '
+  typeset -g POWERLEVEL9K_VCS_BRANCH_ICON=''
+  typeset -g POWERLEVEL9K_VCS_MAX_NUM_STAGED=-1
+  typeset -g POWERLEVEL9K_VCS_MAX_NUM_UNSTAGED=-1
+  typeset -g POWERLEVEL9K_VCS_MAX_NUM_UNTRACKED=-1
+  typeset -g POWERLEVEL9K_VCS_MAX_NUM_CONFLICTED=-1
+
+  # Shorten branch names: bugfix/QEB-1293-long-desc → b/QEB-1293-long-desc-here
+  typeset -g POWERLEVEL9K_VCS_MAX_SYNC_LATENCY_SECONDS=0
+  typeset -g POWERLEVEL9K_VCS_DISABLE_GITSTATUS_FORMATTING=true
+
+  function my_git_formatter() {
+    emulate -L zsh -o extended_glob
+
+    local branch=$VCS_STATUS_LOCAL_BRANCH
+    if [[ -z $branch ]]; then
+      typeset -g my_git_format=$P9K_CONTENT
+      return
+    fi
+
+    if [[ $branch == (#b)(feature|bugfix|hotfix|fix|chore|release|refactor)/(*)  ]]; then
+      local prefix=${match[1][1]}
+      local rest=${match[2]}
+      if [[ $rest == (#b)([A-Z]##-[0-9]##)(-)(*)  ]]; then
+        local ticket=${match[1]}
+        local desc=${match[3]}
+        local short_desc=${(j:-:)${(s:-:)desc}[1,3]}
+        branch="${prefix}/${ticket}-${short_desc}"
+      else
+        branch="${prefix}/${rest[1,20]}"
+      fi
+    fi
+
+    local res=$'\uF126'" ${branch}"
+    (( VCS_STATUS_COMMITS_BEHIND )) && res+=" ⇣${VCS_STATUS_COMMITS_BEHIND}"
+    (( VCS_STATUS_COMMITS_AHEAD )) && res+=" ⇡${VCS_STATUS_COMMITS_AHEAD}"
+    (( VCS_STATUS_NUM_STAGED )) && res+=" +${VCS_STATUS_NUM_STAGED}"
+    (( VCS_STATUS_NUM_UNSTAGED )) && res+=" !${VCS_STATUS_NUM_UNSTAGED}"
+    (( VCS_STATUS_NUM_UNTRACKED )) && res+=" ?${VCS_STATUS_NUM_UNTRACKED}"
+    typeset -g my_git_format=$res
+  }
+  functions -M my_git_formatter 2>/dev/null
+
+  typeset -g POWERLEVEL9K_VCS_CONTENT_EXPANSION='${$((my_git_formatter(1)))+}${my_git_format}'
 
   # Status
   typeset -g POWERLEVEL9K_STATUS_EXTENDED_STATES=true

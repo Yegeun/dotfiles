@@ -16,8 +16,8 @@ plugins=(git)
 source $ZSH/oh-my-zsh.sh
 
 # fzf key bindings and completion
-source "$(brew --prefix)/opt/fzf/shell/key-bindings.zsh"
-source "$(brew --prefix)/opt/fzf/shell/completion.zsh"
+source /opt/homebrew/opt/fzf/shell/key-bindings.zsh
+source /opt/homebrew/opt/fzf/shell/completion.zsh
 
 # aliases
 alias zshconfig="nvim ~/.zshrc"
@@ -29,13 +29,13 @@ alias updatenotes='cd ~/Vault/cs-notes && git pull && git add . && git commit -m
 
 # Lazy load nvm
 export NVM_DIR="$HOME/.nvm"
-alias nvm="unalias nvm; [ -s \"$(brew --prefix nvm)/nvm.sh\" ] && . \"$(brew --prefix nvm)/nvm.sh\"; nvm \$@"
+alias nvm="unalias nvm; [ -s /opt/homebrew/opt/nvm/nvm.sh ] && . /opt/homebrew/opt/nvm/nvm.sh; nvm \$@"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # asdf version manager
-. "$(brew --prefix asdf)/libexec/asdf.sh"
+. /opt/homebrew/opt/asdf/libexec/asdf.sh
 
 # Kiro CLI post block. Keep at the bottom of this file.
 [[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh"
