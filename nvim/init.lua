@@ -9,6 +9,9 @@ vim.g.maplocalleader = "\\"
 
 vim.opt.clipboard = "unnamedplus"
 
+-- Load project-local .nvim.lua files (safe: prompts on first load)
+vim.opt.exrc = true
+
 -- Disable arrow keys to force hjkl usage
 vim.keymap.set({'n', 'i', 'v'}, '<Up>', '<Nop>')
 vim.keymap.set({'n', 'i', 'v'}, '<Down>', '<Nop>')

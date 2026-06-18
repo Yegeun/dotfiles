@@ -127,6 +127,9 @@ echo ""
 bash setup-lazygit.sh
 echo ""
 
+bash setup-kiro.sh
+echo ""
+
 echo "========================================="
 echo "✨ Installation complete!"
 echo "========================================="

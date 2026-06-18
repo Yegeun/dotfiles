@@ -1,0 +1,35 @@
+{
+  "name": "default",
+  "description": "Global default agent",
+  "allowedTools": [
+    "read",
+    "grep",
+    "glob",
+    "code",
+    "shell"
+  ],
+  "toolsSettings": {
+    "read": {
+      "allowedPaths": [
+        "~/.kiro/skills/**",
+        "./.kiro/skills/**"
+      ]
+    },
+    "shell": {
+      "allowedCommands": [
+        "^git (diff|fetch|log|show|status|branch|stash|rev-parse|merge-base|remote|cherry).*",
+        "^cat .*",
+        "^ls .*",
+        "^diff .*"
+      ]
+    }
+  },
+  "hooks": {
+    "postToolUse": [
+      {
+        "matcher": "write",
+        "command": "~/.kiro/hooks/rubocop-fix.sh"
+      }
+    ]
+  }
+}
