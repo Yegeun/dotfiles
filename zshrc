@@ -36,8 +36,8 @@ alias nvm="unalias nvm; [ -s /opt/homebrew/opt/nvm/nvm.sh ] && . /opt/homebrew/o
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# asdf version manager
-. /opt/homebrew/opt/asdf/libexec/asdf.sh
+# asdf version manager (0.16+ is a Go binary; no asdf.sh to source)
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 
 # Kiro CLI post block. Keep at the bottom of this file.
 [[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh"

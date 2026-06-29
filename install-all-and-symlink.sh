@@ -25,7 +25,7 @@ echo ""
 
 # Install core CLI tools (only if not already installed)
 echo "🛠️  Installing core tools..."
-tools=(git node tmux lazygit uv fzf)
+tools=(git node tmux lazygit uv fzf asdf)
 for tool in "${tools[@]}"; do
     if ! command -v $tool &> /dev/null; then
         echo "  Installing $tool..."
