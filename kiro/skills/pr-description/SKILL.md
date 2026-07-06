@@ -37,6 +37,7 @@ A brief summary of what this PR does and why.
 - Removed: Group by feature when multiple related files are deleted. List key files.
 - Do not use AI-style language (e.g. "This PR introduces...", "Leveraging..."). Write plainly.
 - Keep it short and factual.
+- Be concise: the Overview should be 2–3 sentences max. Group related changes into single bullet points rather than listing every file individually. Aim for a PR description that fits on one screen.
 - Output the entire PR description inside a code block so the markdown can be copied raw.
 
 ## How to Generate
