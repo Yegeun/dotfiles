@@ -4,9 +4,36 @@
 FZF=$(command -v fzf)
 TMUX_BIN=$(command -v tmux)
 
-# Create a temporary file to store directory mappings
+# Roots to scan. Missing ones are skipped, so the same script works on any machine.
+search_roots=(
+    "$HOME/Developer"
+    "$HOME/Vault"
+    "$HOME/vault"
+    "$HOME/Documents/Vault"
+    "$HOME/Obsidian"
+)
+
+# Create a temporary file to store directory mappings ($HOME-relative paths)
 tmpfile=$(mktemp)
-find ~/Developer -mindepth 1 -maxdepth 1 -type d -exec basename {} \; > "$tmpfile"
+seen=""
+for root in "${search_roots[@]}"; do
+    [[ -d $root ]] || continue
+
+    # Key on device:inode so ~/Vault and ~/vault (case-insensitive FS,
+    # where pwd -P keeps whatever casing you typed) aren't listed twice.
+    real_root=$(cd "$root" 2>/dev/null && pwd -P) || continue
+    root_id=$(stat -f '%d:%i' "$real_root" 2>/dev/null || stat -c '%d:%i' "$real_root" 2>/dev/null)
+    [[ -n $root_id ]] || root_id="$real_root"
+    case ":$seen:" in
+        *":$root_id:"*) continue ;;
+    esac
+    seen="$seen:$root_id"
+
+    find "$real_root" -mindepth 1 -maxdepth 1 -type d ! -name '.*' 2>/dev/null |
+        while IFS= read -r dir; do
+            printf '%s\n' "${dir#"$HOME"/}"
+        done
+done | sort -u > "$tmpfile"
 echo "dotfiles" >> "$tmpfile"
 
 # Capture both query and selection from fzf, showing only folder names
@@ -20,13 +47,12 @@ fzf_output=$(cat "$tmpfile" | $FZF \
     --marker "✓ " \
     --header "SESSION MANAGER" \
     --color "pointer:9,spinner:92,marker:46,fg:7,bg:-1,hl:4,fg+:15,bg+:0,hl+:12,info:8,prompt:4,border:8" \
-    --preview 'if [[ "{}" == "dotfiles" ]]; then
-                   ls -la --color=always ~/dotfiles 2>/dev/null
-               elif [[ -d ~/Developer/{} ]]; then
-                   ls -la --color=always ~/Developer/{} 2>/dev/null
+    --preview 'target=$HOME/{}
+               if [[ -d "$target" ]]; then
+                   ls -la --color=always "$target" 2>/dev/null || ls -laG "$target"
                else
                    echo "New directory will be created at:"
-                   echo "  ~/Developer/{}"
+                   echo "  ~/Developer/"{}
                fi' \
     --preview-window 'right:55%:border-rounded' \
     --bind 'ctrl-u:preview-page-up,ctrl-d:preview-page-down,?:toggle-preview')
@@ -72,13 +98,9 @@ elif [[ $query == new:* ]]; then
         mkdir -p "$selected"
         new_folder_created=true
     fi
-# Map the selected folder name back to full path
-elif [[ -n $selected_name ]]; then
-    if [[ "$selected_name" == "dotfiles" ]]; then
-        selected="$HOME/dotfiles"
-    else
-        selected="$HOME/Developer/$selected_name"
-    fi
+# Map the selected entry ($HOME-relative) back to a full path
+elif [[ -n $selected_name ]] && [[ -d "$HOME/$selected_name" ]]; then
+    selected="$HOME/$selected_name"
 else
     selected=""
 fi

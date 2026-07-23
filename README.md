@@ -5,10 +5,23 @@ My personal configuration files for macOS development setup.
 ## Quick Start
 
 ```bash
-# Clone and install
+# Clone and install (asks about each component)
 git clone https://github.com/Yegeun/dotfiles.git ~/dotfiles
 cd ~/dotfiles && ./install-all-and-symlink.sh
 ```
+
+Pick what gets installed:
+
+```bash
+./install-all-and-symlink.sh              # interactive [Y/n] per component
+./install-all-and-symlink.sh --all        # everything, no prompts
+./install-all-and-symlink.sh --only nvim,tmux
+./install-all-and-symlink.sh --skip wezterm,font
+./install-all-and-symlink.sh --list       # show components
+```
+
+Components: `core`, `zsh`, `font`, `nvim`, `tmux`, `wezterm`, `lazygit`, `kiro`, `claude`.
+Each one installs its binary/app (if needed) *and* runs its `setup-*.sh` symlinking step.
 
 ## After Install
 
@@ -78,5 +91,5 @@ dotfiles/
 ## Update
 
 ```bash
-cd ~/dotfiles && git pull && ./install-all-and-symlink.sh
+cd ~/dotfiles && git pull && ./install-all-and-symlink.sh --all
 ```
