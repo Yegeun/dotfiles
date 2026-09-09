@@ -16,7 +16,7 @@ COMPONENTS=(
     "font|MesloLGS Nerd Font|1"
     "nvim|Neovim + ~/.config/nvim|0"
     "tmux|tmux + ~/.tmux.conf + scripts|1"
-    "wezterm|WezTerm + ~/.config/wezterm|1"
+    "kitty|kitty + ~/.config/kitty|1"
     "lazygit|lazygit + config|1"
     "kiro|Kiro CLI agents/hooks/skills|0"
     "claude|Claude Code skills|0"
@@ -51,7 +51,7 @@ EOF
     echo ""
     echo "Examples:"
     echo "  ./install-all-and-symlink.sh --only nvim,tmux"
-    echo "  ./install-all-and-symlink.sh --skip wezterm,font"
+    echo "  ./install-all-and-symlink.sh --skip kitty,font"
 }
 
 is_valid() {
@@ -290,19 +290,19 @@ if wants tmux; then
 fi
 
 # -----------------------------------------------------------------------------
-# wezterm
+# kitty
 # -----------------------------------------------------------------------------
-if wants wezterm; then
-    if ! [ -d "/Applications/WezTerm.app" ]; then
-        echo "🖥️  Installing WezTerm..."
-        brew install --cask wezterm
-        echo "✓ WezTerm installed"
+if wants kitty; then
+    if ! [ -d "/Applications/kitty.app" ]; then
+        echo "🖥️  Installing kitty..."
+        brew install --cask kitty
+        echo "✓ kitty installed"
     else
-        echo "✓ WezTerm already installed"
+        echo "✓ kitty already installed"
     fi
     echo ""
 
-    bash setup-wezterm.sh
+    bash setup-kitty.sh
     echo ""
 fi
 

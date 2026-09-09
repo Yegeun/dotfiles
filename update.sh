@@ -47,7 +47,7 @@ echo ""
 bash setup-tmux.sh
 echo ""
 
-bash setup-wezterm.sh
+bash setup-kitty.sh
 echo ""
 
 bash setup-lazygit.sh

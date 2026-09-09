@@ -15,7 +15,7 @@ Personal macOS dev environment config. Not an app — no build, no tests, no dep
 | `zshrc`, `p10k.zsh` | Zsh (oh-my-zsh) + Powerlevel10k, symlinked via `setup-zsh.sh` |
 | `nvim/` | Neovim config (lazy.nvim), symlinked via `setup-nvim.sh` |
 | `tmux.conf`, `tmux-sessionizer`, `tmux-command-menu` | Tmux config + scripts, via `setup-tmux.sh` |
-| `wezterm/` | Terminal config, via `setup-wezterm.sh` |
+| `kitty/` | Terminal config (`kitty.conf` + the Catppuccin Macchiato palette it `include`s), via `setup-kitty.sh`. `term` is pinned to `xterm-256color` rather than kitty's `xterm-kitty` default, because `tmux.conf` matches that exact name to enable RGB truecolor |
 | `lazygit-config.yml` | via `setup-lazygit.sh` |
 | `kiro/` | Kiro CLI agents/hooks/skills, via `setup-kiro.sh` — symlinked into `~/.kiro/` |
 | `claude/skills/<name>/SKILL.md` | Claude Code skills, via `setup-claude.sh` — symlinked into `~/.claude/skills/<name>/SKILL.md` |

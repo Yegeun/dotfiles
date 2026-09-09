@@ -16,11 +16,11 @@ Pick what gets installed:
 ./install-all-and-symlink.sh              # interactive [Y/n] per component
 ./install-all-and-symlink.sh --all        # everything, no prompts
 ./install-all-and-symlink.sh --only nvim,tmux
-./install-all-and-symlink.sh --skip wezterm,font
+./install-all-and-symlink.sh --skip kitty,font
 ./install-all-and-symlink.sh --list       # show components
 ```
 
-Components: `core`, `zsh`, `font`, `nvim`, `tmux`, `wezterm`, `lazygit`, `kiro`, `claude`.
+Components: `core`, `zsh`, `font`, `nvim`, `tmux`, `kitty`, `lazygit`, `kiro`, `claude`.
 Each one installs its binary/app (if needed) *and* runs its `setup-*.sh` symlinking step.
 
 ## After Install
@@ -84,7 +84,7 @@ dotfiles/
 ├── tmux-command-menu
 ├── zshrc           # Zsh config (oh-my-zsh)
 ├── p10k.zsh        # Powerlevel10k theme
-├── wezterm/        # Terminal config
+├── kitty/          # Terminal config (kitty, catppuccin macchiato)
 └── lazygit-config.yml
 ```
 
