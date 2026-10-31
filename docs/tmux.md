@@ -16,8 +16,9 @@ Prefix key: `` ` `` (backtick)
 
 | Key | Action |
 |-----|--------|
-| `Prefix + \|` | Split horizontal |
-| `Prefix + -` | Split vertical |
+| `Prefix + c` | New window (opens in the current pane's directory) |
+| `Prefix + \|` | Split horizontal (keeps current path) |
+| `Prefix + -` | Split vertical (keeps current path) |
 | `Ctrl+h` | Move to left pane |
 | `Ctrl+j` | Move to down pane |
 | `Ctrl+k` | Move to up pane |
