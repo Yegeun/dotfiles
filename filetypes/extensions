@@ -1,0 +1,95 @@
+# Extensions that open through filetypes/open-file, one per line.
+# Left out on purpose: html (browser), csv (spreadsheet), and anything Apple-dev
+# (swift, m, mm, plist, xcconfig, storyboard, ...) which stays with Xcode.
+# setup-filetypes.sh pins swift, m, mm and xcscheme to Xcode directly.
+
+# Text and docs
+txt
+md
+markdown
+rst
+tex
+log
+
+# Data and config
+json
+jsonc
+json5
+yaml
+yml
+toml
+ini
+cfg
+conf
+env
+xml
+lock
+sql
+proto
+graphql
+gql
+tf
+hcl
+nix
+
+# Shell
+sh
+bash
+zsh
+fish
+
+# Scripting
+py
+pyi
+rb
+pl
+php
+lua
+vim
+
+# Web
+js
+jsx
+mjs
+cjs
+ts
+tsx
+mts
+cts
+vue
+svelte
+astro
+css
+scss
+sass
+less
+
+# C family (inside an Xcode project these still go to Xcode)
+h
+hpp
+c
+cc
+cpp
+cxx
+
+# Other languages
+rs
+go
+java
+kt
+kts
+cs
+dart
+scala
+ex
+exs
+erl
+hs
+clj
+
+# Build and diffs
+mk
+cmake
+gradle
+diff
+patch

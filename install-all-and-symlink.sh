@@ -18,6 +18,7 @@ COMPONENTS=(
     "tmux|tmux + ~/.tmux.conf + scripts|1"
     "kitty|kitty + ~/.config/kitty|1"
     "lazygit|lazygit + config|1"
+    "filetypes|Open code/text files in nvim by default (needs nvim, kitty)|0"
     "kiro|Kiro CLI agents/hooks/skills|0"
     "claude|Claude Code skills|0"
 )
@@ -316,6 +317,14 @@ if wants lazygit; then
     echo ""
 
     bash setup-lazygit.sh
+    echo ""
+fi
+
+# -----------------------------------------------------------------------------
+# filetypes
+# -----------------------------------------------------------------------------
+if wants filetypes; then
+    bash setup-filetypes.sh
     echo ""
 fi
 

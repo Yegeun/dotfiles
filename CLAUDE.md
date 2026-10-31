@@ -17,6 +17,7 @@ Personal macOS dev environment config. Not an app — no build, no tests, no dep
 | `tmux.conf`, `tmux-sessionizer`, `tmux-command-menu` | Tmux config + scripts, via `setup-tmux.sh` |
 | `kitty/` | Terminal config (`kitty.conf` + the Catppuccin Macchiato palette it `include`s), via `setup-kitty.sh`. `term` is pinned to `xterm-256color` rather than kitty's `xterm-kitty` default, because `tmux.conf` matches that exact name to enable RGB truecolor |
 | `lazygit-config.yml` | via `setup-lazygit.sh` |
+| `filetypes/` | Finder default-app routing, via `setup-filetypes.sh` — builds `~/Applications/Open in Neovim.app` and makes it the default for every extension in `filetypes/extensions`. `filetypes/open-file` sends files inside an Xcode project to Xcode and the rest to nvim in a new kitty window. Swift and Objective-C are pinned to Xcode everywhere (`XCODE_EXTENSIONS` in the setup script). Edits to `open-file` apply immediately; edits to `extensions` need the setup script re-run |
 | `kiro/` | Kiro CLI agents/hooks/skills, via `setup-kiro.sh` — symlinked into `~/.kiro/` |
 | `claude/skills/<name>/SKILL.md` | Claude Code skills, via `setup-claude.sh` — symlinked into `~/.claude/skills/<name>/SKILL.md` |
 | `docs/` | Deeper reference for neovim/tmux/shell (keybindings etc.) |

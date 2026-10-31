@@ -20,7 +20,7 @@ Pick what gets installed:
 ./install-all-and-symlink.sh --list       # show components
 ```
 
-Components: `core`, `zsh`, `font`, `nvim`, `tmux`, `kitty`, `lazygit`, `kiro`, `claude`.
+Components: `core`, `zsh`, `font`, `nvim`, `tmux`, `kitty`, `lazygit`, `filetypes`, `kiro`, `claude`.
 Each one installs its binary/app (if needed) *and* runs its `setup-*.sh` symlinking step.
 
 ## After Install
@@ -85,6 +85,7 @@ dotfiles/
 ├── zshrc           # Zsh config (oh-my-zsh)
 ├── p10k.zsh        # Powerlevel10k theme
 ├── kitty/          # Terminal config (kitty, catppuccin macchiato)
+├── filetypes/      # Open code/text files in nvim from Finder (Xcode for Xcode projects)
 └── lazygit-config.yml
 ```
 

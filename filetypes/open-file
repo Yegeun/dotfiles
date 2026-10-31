@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+# Default handler for files opened from Finder (see setup-filetypes.sh).
+# Files inside an Xcode project go to Xcode, everything else to nvim in a new
+# kitty window.
+
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+
+in_xcode_project() {
+    local dir project
+    dir="$(dirname "$1")"
+    while [ "$dir" != "/" ] && [ "$dir" != "$HOME" ]; do
+        for project in "$dir"/*.xcodeproj "$dir"/*.xcworkspace; do
+            [ -e "$project" ] && return 0
+        done
+        dir="$(dirname "$dir")"
+    done
+    return 1
+}
+
+nvim_files=()
+for file in "$@"; do
+    if in_xcode_project "$file"; then
+        open -a Xcode "$file"
+    else
+        nvim_files+=("$file")
+    fi
+done
+
+[ ${#nvim_files[@]} -eq 0 ] && exit 0
+
+# Start at the repo root so nvim's file pickers see the whole project
+dir="$(dirname "${nvim_files[0]}")"
+root="$(git -C "$dir" rev-parse --show-toplevel 2>/dev/null || echo "$dir")"
+
+open -na kitty --args --directory "$root" "$(command -v nvim)" -p "${nvim_files[@]}"

@@ -53,6 +53,9 @@ echo ""
 bash setup-lazygit.sh
 echo ""
 
+bash setup-filetypes.sh
+echo ""
+
 # Update tmux plugins
 if command -v tmux &> /dev/null && [ -d "${HOME}/.tmux/plugins/tpm" ]; then
     echo "🔌 Updating tmux plugins..."
