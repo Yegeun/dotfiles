@@ -5,6 +5,10 @@ DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo "Setting up Claude Code configuration..."
 
+# Global instructions, loaded in every project
+mkdir -p "${HOME}/.claude"
+ln -sf "${DOTFILES_DIR}/claude/CLAUDE.md" "${HOME}/.claude/CLAUDE.md"
+
 # Symlink skills — each skill is a directory containing SKILL.md
 for skill_dir in "${DOTFILES_DIR}"/claude/skills/*/; do
     [ -d "$skill_dir" ] || continue

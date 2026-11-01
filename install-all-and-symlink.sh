@@ -20,7 +20,7 @@ COMPONENTS=(
     "lazygit|lazygit + config|1"
     "filetypes|Open code/text files in nvim by default (needs nvim, kitty)|0"
     "kiro|Kiro CLI agents/hooks/skills|0"
-    "claude|Claude Code skills|0"
+    "claude|Claude Code skills + global CLAUDE.md|0"
     "routines|Morning jobs (clone their private repos first, see docs/routines.md)|0"
 )
 
