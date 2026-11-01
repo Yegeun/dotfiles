@@ -20,7 +20,7 @@ Pick what gets installed:
 ./install-all-and-symlink.sh --list       # show components
 ```
 
-Components: `core`, `zsh`, `font`, `nvim`, `tmux`, `kitty`, `lazygit`, `filetypes`, `kiro`, `claude`.
+Components: `core`, `zsh`, `font`, `nvim`, `tmux`, `kitty`, `lazygit`, `filetypes`, `kiro`, `claude`, `routines`.
 Each one installs its binary/app (if needed) *and* runs its `setup-*.sh` symlinking step.
 
 ## After Install
@@ -36,6 +36,7 @@ Each one installs its binary/app (if needed) *and* runs its `setup-*.sh` symlink
 | [Neovim](docs/neovim.md) | LSP, keybindings, plugins |
 | [Tmux](docs/tmux.md) | Sessions, panes, shortcuts |
 | [Shell](docs/shell.md) | Aliases, fzf, prompt |
+| [Morning routines](docs/routines.md) | What runs each morning, and moving it to a new Mac |
 
 ## Quick Reference
 
@@ -72,6 +73,7 @@ Each one installs its binary/app (if needed) *and* runs its `setup-*.sh` symlink
 | `Ctrl+T` | Search files |
 | `t` | tmux-sessionizer |
 | `lg` | lazygit |
+| `routines` | Morning jobs and whether they ran |
 
 ## Contents
 
@@ -86,6 +88,7 @@ dotfiles/
 ├── p10k.zsh        # Powerlevel10k theme
 ├── kitty/          # Terminal config (kitty, catppuccin macchiato)
 ├── filetypes/      # Open code/text files in nvim from Finder (Xcode for Xcode projects)
+├── routines/       # Index of the morning jobs and the `routines` status command
 └── lazygit-config.yml
 ```
 

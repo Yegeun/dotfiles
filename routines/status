@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+# What runs on this Mac each morning and whether it is healthy. Times come from
+# the installed plists, so they are the ones launchd will really use.
+# Exits 1 if anything needs attention.
+
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "${DOTFILES_DIR}/routines/lib.sh"
+AGENTS="${HOME}/Library/LaunchAgents"
+LOGS="${HOME}/Library/Logs"
+DOMAIN="gui/$(id -u)"
+problems=0
+known=""
+
+problem() {
+    echo "      ⚠️  $1"
+    problems=1
+}
+
+echo "Scheduled"
+while IFS='|' read -r label folders script args log what <&3; do
+    case "$label" in ''|'#'*) continue ;; esac
+    known="$known $label "
+    plist="${AGENTS}/${label}.plist"
+
+    if ! info="$(launchctl print "${DOMAIN}/${label}" 2>/dev/null)"; then
+        echo "  ✗ ${label}"
+        problem "not installed, run ~/dotfiles/setup-routines.sh"
+        continue
+    fi
+
+    times="$(plutil -p "$plist" | awk '/"Hour"/ {h=$3} /"Minute"/ {printf "%s%02d:%02d", sep, h, $3; sep=", "}')"
+    echo "  ✓ ${label}  ${times}"
+    echo "      ${what}"
+
+    if [ -f "${LOGS}/${log}" ]; then
+        echo "      last run $(stat -f '%Sm' -t '%a %d %b %H:%M' "${LOGS}/${log}"), log ~/Library/Logs/${log}"
+        [ -n "$(find "${LOGS}/${log}" -mtime +1)" ] && problem "has not run for over a day"
+    else
+        problem "no log yet, so it has not run"
+    fi
+
+    code="$(echo "$info" | awk -F'= ' '/last exit code/ {print $2; exit}')"
+    case "$code" in 0|""|*never*) ;; *) problem "last run failed with exit code ${code}" ;; esac
+
+    if repo="$(find_repo "$folders" "$script")"; then
+        changed="$(git -C "$repo" status --porcelain | wc -l | tr -d ' ')"
+        unpushed="$(git -C "$repo" rev-list --count '@{u}..HEAD' 2>/dev/null || echo 0)"
+        echo "      repo ${repo/#$HOME/~}, ${changed} changed, ${unpushed} unpushed"
+    else
+        problem "no repo in ~/${folders}"
+    fi
+done 3< "${DOTFILES_DIR}/routines/jobs"
+
+# The whole point of the list: a job added on this Mac cannot go unnoticed.
+for plist in "$AGENTS"/com.yegeun.*.plist; do
+    [ -e "$plist" ] || continue
+    label="$(basename "$plist" .plist)"
+    case "$known" in
+        *" $label "*) ;;
+        *)
+            echo "  ? ${label}"
+            problem "runs here but is not in routines/jobs, so a new Mac would lose it"
+            ;;
+    esac
+done
+
+[ -x "${HOME}/.local/bin/claude" ] || { echo ""; problem "Claude Code is missing, so the feed has no summaries"; }
+
+echo ""
+echo "By hand, in Claude Code from your vault"
+echo "  /sources daily   go through the feed and what you exported from it"
+echo "  /leet daily      today's practice sheet, then /leet finish"
+echo ""
+echo "Details: ~/dotfiles/docs/routines.md"
+
+exit "$problems"

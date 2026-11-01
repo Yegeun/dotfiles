@@ -21,6 +21,7 @@ COMPONENTS=(
     "filetypes|Open code/text files in nvim by default (needs nvim, kitty)|0"
     "kiro|Kiro CLI agents/hooks/skills|0"
     "claude|Claude Code skills|0"
+    "routines|Morning jobs (clone their private repos first, see docs/routines.md)|0"
 )
 
 comp_name()  { echo "${1%%|*}"; }
@@ -342,6 +343,14 @@ if wants claude; then
 fi
 
 # -----------------------------------------------------------------------------
+# routines (morning launchd jobs and the repos they live in)
+# -----------------------------------------------------------------------------
+if wants routines; then
+    bash setup-routines.sh || echo "⚠️  Carrying on without the morning routines"
+    echo ""
+fi
+
+# -----------------------------------------------------------------------------
 # Done
 # -----------------------------------------------------------------------------
 echo "========================================="
@@ -360,5 +369,8 @@ if wants tmux; then
 fi
 if wants nvim; then
     echo "- Open nvim - plugins will auto-install on first launch"
+fi
+if wants routines; then
+    echo "- Check the morning jobs with: routines (moving Mac? see docs/routines.md)"
 fi
 echo ""

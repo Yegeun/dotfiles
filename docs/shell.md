@@ -7,6 +7,7 @@
 | `zshconfig` | Edit ~/.zshrc in nvim |
 | `lg` | lazygit |
 | `t` | tmux-sessionizer |
+| `routines` | Show the morning jobs and whether they ran |
 | `ta` | tmux attach |
 | `tn` | tmux new-session |
 | `updatenotes` | Sync cs-notes vault |

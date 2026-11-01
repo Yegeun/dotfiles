@@ -20,7 +20,8 @@ Personal macOS dev environment config. Not an app — no build, no tests, no dep
 | `filetypes/` | Finder default-app routing, via `setup-filetypes.sh` — builds `~/Applications/Open in Neovim.app` and makes it the default for every extension in `filetypes/extensions`. `filetypes/open-file` sends files inside an Xcode project to Xcode and the rest to nvim in a new kitty window. Swift and Objective-C are pinned to Xcode everywhere (`XCODE_EXTENSIONS` in the setup script). Edits to `open-file` apply immediately; edits to `extensions` need the setup script re-run |
 | `kiro/` | Kiro CLI agents/hooks/skills, via `setup-kiro.sh` — symlinked into `~/.kiro/` |
 | `claude/skills/<name>/SKILL.md` | Claude Code skills, via `setup-claude.sh` — symlinked into `~/.claude/skills/<name>/SKILL.md` |
-| `docs/` | Deeper reference for neovim/tmux/shell (keybindings etc.) |
+| `routines/`, `setup-routines.sh` | Morning launchd jobs. `routines/jobs` is the index, one line per job. Each job's code and plist stay in its own repo; `setup-routines.sh` finds that repo, pulls it and runs its install script, but never clones it. `routines/status` is the `routines` command and flags any `com.yegeun.*` job not in the index, so add a line there for every new job. **This repo is public: never add private repo names, clone URLs or vault content.** That is why the vault is found by a `Vault/*` pattern and not named. Human guide: `docs/routines.md` |
+| `docs/` | Deeper reference for neovim/tmux/shell/routines (keybindings etc.) |
 
 ## Adding a new symlinked skill/config
 

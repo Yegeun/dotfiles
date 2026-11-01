@@ -25,6 +25,7 @@ source /opt/homebrew/opt/fzf/shell/completion.zsh
 alias zshconfig="nvim ~/.zshrc"
 alias lg="lazygit"
 alias t="$HOME/dotfiles/tmux-sessionizer"
+alias routines="$HOME/dotfiles/routines/status"
 alias ta="tmux attach"
 alias tn="tmux new-session"
 alias updatenotes='cd ~/Vault/cs-notes && git pull && git add . && git commit -m "$(date +%Y-%m-%d)" && git push'

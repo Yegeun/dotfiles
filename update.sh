@@ -53,6 +53,9 @@ echo ""
 bash setup-lazygit.sh
 echo ""
 
+bash setup-routines.sh || echo "⚠️  Carrying on without the morning routines"
+echo ""
+
 bash setup-filetypes.sh
 echo ""
 

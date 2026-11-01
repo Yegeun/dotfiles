@@ -1,0 +1,8 @@
+# One line per scheduled job. setup-routines.sh and routines/status both read this.
+# The code and schedule live in the job's own repo; this is the index that finds them.
+# This repo is public, so private repo names and clone URLs stay out of here. A job's repo
+# is whichever folder matching the second field holds its install script.
+#
+# label|folders under $HOME|install script in the repo|its arguments|log in ~/Library/Logs|what it does
+com.yegeun.sources-daily|Vault/*|.claude/launchd/install.sh||sources-daily.log|Paper and repo feed, writes ~/Desktop/Papers.html
+com.yegeun.bwlreact-disk-clean|Developer/bwlreact|scripts/disk-clean.sh|--install|bwlreact-disk-clean.log|Clears old Xcode and Next build files
